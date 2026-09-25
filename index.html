@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EISPS Student Rep Elections</title>
+<style>
+  :root {
+    --bg: #f3eee4;
+    --surface: #fbf8f2;
+    --surface-raised: #ffffff;
+    --text: #211129;
+    --text-soft: #5b4a68;
+    --text-faint: #8a7a94;
+    --line: rgba(33,17,41,0.14);
+    --line-strong: rgba(33,17,41,0.26);
+    --accent: #5c2a6e;
+    --accent-soft: #ece1f1;
+    --accent-2: #8a6a26;
+    --accent-2-soft: #f1e6c9;
+    --flag: #a6432f;
+    --flag-soft: #f4e2dc;
+    --good: #2f6b4f;
+    --good-soft: #dcece2;
+    --focus: #5c2a6e;
+    --shadow: 0 1px 2px rgba(33,17,41,0.06), 0 8px 24px -12px rgba(33,17,41,0.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17101f;
+      --surface: #201631;
+      --surface-raised: #291c3d;
+      --text: #f1ecdf;
+      --text-soft: #c6b9d3;
+      --text-faint: #90809e;
+      --line: rgba(241,236,223,0.14);
+      --line-strong: rgba(241,236,223,0.26);
+      --accent: #cd9ce6;
+      --accent-soft: #35244a;
+      --accent-2: #e0bf6f;
+      --accent-2-soft: #3a3320;
+      --flag: #e18a70;
+      --flag-soft: #402620;
+      --good: #7fc9a3;
+      --good-soft: #1f3a2c;
+      --focus: #cd9ce6;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17101f;
+    --surface: #201631;
+    --surface-raised: #291c3d;
+    --text: #f1ecdf;
+    --text-soft: #c6b9d3;
+    --text-faint: #90809e;
+    --line: rgba(241,236,223,0.14);
+    --line-strong: rgba(241,236,223,0.26);
+    --accent: #cd9ce6;
+    --accent-soft: #35244a;
+    --accent-2: #e0bf6f;
+    --accent-2-soft: #3a3320;
+    --flag: #e18a70;
+    --flag-soft: #402620;
+    --good: #7fc9a3;
+    --good-soft: #1f3a2c;
+    --focus: #cd9ce6;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Libre Franklin", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .display {
+    font-family: "Fraunces", ui-serif, Georgia, serif;
+    font-weight: 600;
+    text-wrap: balance;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", monospace; }
+  a { color: var(--accent); }
+
+  /* ---------- Shell ---------- */
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .topbar .name { font-weight: 600; font-size: 15px; }
+  .topbar .sub { font-size: 12px; color: var(--text-faint); font-family: "IBM Plex Mono", monospace; }
+
+  .chiprow { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+
+  .chiprow a {
+    text-decoration: none;
+    font-size: 12.5px;
+    color: var(--text-soft);
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  .chiprow a:hover { border-color: var(--accent); color: var(--accent); }
+
+  main { max-width: 880px; margin: 0 auto; padding: 40px 22px 80px; }
+
+  section.block { margin-bottom: 52px; scroll-margin-top: 70px; }
+  section.block > h2 { font-size: 24px; margin: 0 0 4px; }
+  section.block > .block-note { color: var(--text-faint); font-size: 13.5px; margin-bottom: 20px; max-width: 62ch; }
+
+  /* ---------- Hero ---------- */
+
+  .hero { padding-bottom: 30px; border-bottom: 1px solid var(--line); margin-bottom: 44px; }
+
+  .stage-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    background: var(--accent-2-soft);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin-bottom: 16px;
+  }
+
+  .stage-banner.good { color: var(--good); background: var(--good-soft); }
+
+  .stage-banner .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  .hero .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 10px;
+  }
+
+  .hero h1 { font-size: clamp(30px, 4.5vw, 44px); margin: 0 0 14px; }
+  .hero p.lede { font-size: 17px; color: var(--text-soft); max-width: 66ch; margin: 0 0 8px; }
+
+  .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Libre Franklin", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 20px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .btn-primary { background: var(--accent); color: var(--surface-raised); }
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--line-strong); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- How it works ---------- */
+
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 20px; }
+
+  .step .num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .step.current { border-color: var(--accent); box-shadow: var(--shadow); }
+  .step h3 { font-size: 16px; margin: 0 0 6px; }
+  .step p { font-size: 13.5px; color: var(--text-soft); margin: 0; }
+
+  /* ---------- Forms ---------- */
+
+  .formcard {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 22px 24px;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-soft);
+    margin-bottom: 6px;
+  }
+
+  .field .hint { font-weight: 400; color: var(--text-faint); font-size: 11.5px; }
+
+  .field input[type="text"],
+  .field input[type="email"],
+  .field select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface-raised);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .field input[type="file"] {
+    width: 100%;
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+
+  .field input:focus, .field select:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+  .form-msg {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .form-msg.success { background: var(--good-soft); color: var(--good); }
+  .form-msg.error { background: var(--flag-soft); color: var(--flag); }
+
+  .radiorow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .radiorow:last-of-type { border-bottom: none; }
+  .radiorow label { font-size: 14px; font-weight: 500; color: var(--text); margin: 0; flex: 1; display: flex; align-items: center; gap: 10px; }
+
+  .radiorow .rphoto {
+    width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+    border: 1px solid var(--line-strong); background: var(--accent-soft); flex: 0 0 32px;
+  }
+  .radiorow .rphoto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ---------- Positions ---------- */
+
+  .posgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+
+  .poscard {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .poscard .postitle { font-weight: 600; font-size: 15px; }
+  .poscard .posdesc { font-size: 13px; color: var(--text-soft); flex: 1; margin: 0; }
+
+  /* ---------- Candidates ---------- */
+
+  .posgroup { margin-bottom: 26px; }
+  .posgroup:last-child { margin-bottom: 0; }
+  .posgroup h3 { font-size: 16.5px; margin: 0 0 10px; }
+
+  .directory { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-bottom: 14px; }
+
+  .candcard {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .candcard .photo {
+    flex: 0 0 54px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    background: var(--accent-soft);
+  }
+
+  .candcard .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .candcard .ctext { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
+  .candcard .cname { font-weight: 600; font-size: 14.5px; }
+  .candcard .cmeta { font-size: 12px; color: var(--text-faint); }
+
+  .empty-note {
+    border: 1px dashed var(--line-strong);
+    border-radius: 12px;
+    padding: 26px 20px;
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 13.5px;
+  }
+
+  .badge {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: var(--accent-2-soft);
+    color: var(--accent-2);
+    white-space: nowrap;
+  }
+
+  .badge.good { background: var(--good-soft); color: var(--good); }
+
+  .results-note {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    font-size: 15px;
+    color: var(--text-soft);
+    white-space: pre-wrap;
+  }
+
+  .rail-foot {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    line-height: 1.8;
+  }
+
+  .rail-foot a { color: var(--text-faint); }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 620px) {
+    .topbar { padding: 12px 16px; }
+    .chiprow { width: 100%; margin-left: 0; }
+    main { padding: 28px 16px 60px; }
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="mark">
+    <div class="name">EISPS Student Rep Elections</div>
+    <div class="sub">2026&ndash;27</div>
+  </div>
+  <div class="chiprow">
+    <a href="#how-it-works">How it works</a>
+    <a href="#positions">Positions</a>
+    <a href="#candidates">Candidates</a>
+    <a href="#vote">Vote</a>
+    <a href="#results">Results</a>
+  </div>
+</div>
+
+<main>
+
+  <section class="hero" id="overview">
+    <div class="stage-banner" id="stage-banner"><span class="dot"></span><span id="stage-banner-text">Loading&hellip;</span></div>
+    <div class="eyebrow">EISPS &middot; Student Representatives</div>
+    <h1>Stand, or have your say</h1>
+    <p class="lede">Every year, EISPS students elect representatives to speak for their year group at Staff&ndash;Student Committee and beyond &mdash; raising issues, feeding back on modules, and helping shape how the department runs.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#nominate">Nominate yourself &darr;</a>
+      <a class="btn btn-ghost" href="#positions">See the positions</a>
+    </div>
+  </section>
+
+  <section class="block" id="how-it-works">
+    <h2>How it works</h2>
+    <div class="block-note">Three stages &mdash; nominate, campaign, vote.</div>
+
+    <div class="steps">
+      <div class="step" data-step="nominations">
+        <div class="num">1</div>
+        <h3>Nominate</h3>
+        <p>Any EISPS student can put themselves forward for their year group's position.</p>
+      </div>
+      <div class="step" data-step="voting">
+        <div class="num">2</div>
+        <h3>Campaign &amp; vote</h3>
+        <p>Once nominations close, candidates are listed below and voting opens &mdash; one vote per student, per position.</p>
+      </div>
+      <div class="step" data-step="results">
+        <div class="num">3</div>
+        <h3>Results</h3>
+        <p>Announced here once voting closes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="positions">
+    <h2>Positions</h2>
+    <div class="block-note">Every EISPS year group and route has its own representative.</div>
+    <div class="posgrid" id="posgrid"></div>
+  </section>
+
+  <section class="block" id="nominate">
+    <h2>Nominate yourself</h2>
+    <div class="block-note" id="nominate-note">Open to all EISPS students &mdash; you'll need your UCL email address.</div>
+
+    <div class="formcard" id="nominate-form-wrap">
+      <form id="nominate-form">
+        <div class="field">
+          <label for="n-name">Full name</label>
+          <input type="text" id="n-name" required>
+        </div>
+        <div class="field">
+          <label for="n-email">UCL email <span class="hint">&mdash; @ucl.ac.uk or @live.ucl.ac.uk</span></label>
+          <input type="email" id="n-email" required>
+        </div>
+        <div class="field">
+          <label for="n-position">Position you're standing for</label>
+          <select id="n-position" required></select>
+        </div>
+        <div class="field">
+          <label for="n-yearprog">Year / programme <span class="hint">(optional)</span></label>
+          <input type="text" id="n-yearprog" placeholder="e.g. BA ISPS, Year 2">
+        </div>
+        <div class="field">
+          <label for="n-photo">Photo <span class="hint">(optional, shown on your candidate card)</span></label>
+          <input type="file" id="n-photo" accept="image/*">
+        </div>
+        <button class="btn btn-primary" type="submit" id="n-submit">Submit nomination</button>
+        <div class="form-msg" id="n-msg" hidden></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="block" id="candidates">
+    <h2>Candidates</h2>
+    <div class="block-note">Confirmed candidates, once nominations close.</div>
+    <div id="candidates-body">
+      <div class="empty-note" id="candidates-empty">Nominations are still open &mdash; check back once they close to see who's standing.</div>
+    </div>
+  </section>
+
+  <section class="block" id="vote">
+    <h2>Vote</h2>
+    <div class="block-note">One vote per student, per position.</div>
+    <div id="vote-body">
+      <div class="empty-note" id="vote-empty">Voting isn't open yet.</div>
+    </div>
+  </section>
+
+  <section class="block" id="results">
+    <h2>Results</h2>
+    <div class="block-note">Announced once voting closes.</div>
+    <div id="results-body">
+      <div class="empty-note" id="results-empty">Results will be posted here after voting closes.</div>
+    </div>
+  </section>
+
+  <div class="rail-foot">
+    Questions about the election process? Contact <a href="mailto:ah-eisps@ucl.ac.uk">ah-eisps@ucl.ac.uk</a>.
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function () {
+
+  // ---------------------------------------------------------------
+  // Fill these in from your Supabase project (Settings -> API).
+  // ---------------------------------------------------------------
+  var SUPABASE_URL = "https://htzjwjnvuklmqhfcomhv.supabase.co";
+  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0emp3am52dWtsbXFoZmNvbWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMzExOTEsImV4cCI6MjEwNTkwNzE5MX0.MrlGqWGz7hR2dI8OC8GF8NKDL_bBuNEO9I-yF9mTawU";
+
+  var POSITIONS = [
+    { key: "Year 1 ESPS Representative", desc: "Speaks for first-year ESPS students on teaching, welfare, and induction." },
+    { key: "Year 1 ISPS Representative", desc: "Speaks for first-year ISPS students on teaching, welfare, and induction." },
+    { key: "Year 2 ESPS Representative", desc: "Speaks for second-year ESPS students, including on specialism and module selection." },
+    { key: "Year 2 ISPS Representative", desc: "Speaks for second-year ISPS students, including on specialism and module selection." },
+    { key: "Year 3 ESPS Dual Degree Representative", desc: "Represents third-year ESPS Dual Degree students, including time at the partner institution." },
+    { key: "Year 3 SPS Representative", desc: "Represents third-year students on their year abroad, liaising remotely with the department." },
+    { key: "Year 4 ESPS Representative", desc: "Speaks for final-year ESPS students on dissertation support, assessment, and graduation." },
+    { key: "Year 4 ISPS Representative", desc: "Speaks for final-year ISPS students on dissertation support, assessment, and graduation." },
+    { key: "Year 4 ESPS Dual Degree Representative", desc: "Speaks for final-year ESPS Dual Degree students on dissertation support, assessment, and graduation." }
+  ];
+
+  var UCL_EMAIL_RE = /^[A-Za-z0-9._%+-]+@(ucl\.ac\.uk|live\.ucl\.ac\.uk)$/i;
+
+  var configured = SUPABASE_URL.indexOf("PASTE_") !== 0 && SUPABASE_ANON_KEY.indexOf("PASTE_") !== 0;
+  var sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  // ---------------------------------------------------------------
+  // Static: render position cards (always visible)
+  // ---------------------------------------------------------------
+  var posgrid = document.getElementById("posgrid");
+  var nPosition = document.getElementById("n-position");
+  POSITIONS.forEach(function (p) {
+    var card = document.createElement("div");
+    card.className = "poscard";
+    card.innerHTML = '<div class="postitle"></div><p class="posdesc"></p>';
+    card.querySelector(".postitle").textContent = p.key;
+    card.querySelector(".posdesc").textContent = p.desc;
+    posgrid.appendChild(card);
+
+    var opt = document.createElement("option");
+    opt.value = p.key;
+    opt.textContent = p.key;
+    nPosition.appendChild(opt);
+  });
+
+  if (!configured) {
+    setStage("nominations", "Set up Supabase to go live");
+    document.getElementById("nominate-note").textContent =
+      "This page isn't connected to a database yet — paste your Supabase project URL and anon key into the script near the bottom of this file.";
+    document.getElementById("n-submit").disabled = true;
+    return;
+  }
+
+  // ---------------------------------------------------------------
+  // Stage banner + step highlighting
+  // ---------------------------------------------------------------
+  function setStage(phase, label) {
+    var banner = document.getElementById("stage-banner");
+    var text = document.getElementById("stage-banner-text");
+    text.textContent = label;
+    banner.classList.toggle("good", phase === "results");
+    document.querySelectorAll(".step").forEach(function (s) {
+      s.classList.toggle("current", s.getAttribute("data-step") === phase);
+    });
+  }
+
+  function photoUrl(path) {
+    if (!path) return null;
+    return sb.storage.from("candidate-photos").getPublicUrl(path).data.publicUrl;
+  }
+
+  function showMsg(el, kind, text) {
+    el.hidden = false;
+    el.className = "form-msg " + kind;
+    el.textContent = text;
+  }
+
+  // ---------------------------------------------------------------
+  // Load settings, then render the right phase
+  // ---------------------------------------------------------------
+  sb.from("settings").select("*").eq("id", 1).single().then(function (res) {
+    if (res.error || !res.data) {
+      setStage("nominations", "Nominations open");
+      return;
+    }
+    var s = res.data;
+    renderPhase(s);
+  });
+
+  function renderPhase(s) {
+    var phase = s.phase || "nominations";
+
+    if (phase === "nominations") {
+      setStage("nominations", "Nominations open" + (s.nominations_close_at ? " — closes " + fmtDate(s.nominations_close_at) : ""));
+      document.getElementById("nominate-form-wrap").hidden = false;
+    } else {
+      document.getElementById("nominate-note").textContent = "Nominations are closed.";
+      document.getElementById("nominate-form-wrap").hidden = true;
+    }
+
+    if (phase === "voting") {
+      setStage("voting", "Voting open" + (s.voting_closes_at ? " — closes " + fmtDate(s.voting_closes_at) : ""));
+      loadCandidates(true);
+    } else if (phase === "results") {
+      setStage("results", "Voting closed");
+      loadCandidates(false);
+      document.getElementById("vote-empty").textContent = "Voting has closed.";
+    } else {
+      loadCandidates(false);
+    }
+
+    if (phase === "results") {
+      document.getElementById("results-empty").hidden = true;
+      var note = document.createElement("div");
+      note.className = "results-note";
+      note.textContent = s.results_note || "Results are being finalised — check back shortly.";
+      document.getElementById("results-body").appendChild(note);
+    }
+  }
+
+  function fmtDate(iso) {
+    try {
+      return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    } catch (e) {
+      return iso;
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Candidates directory (approved only, grouped by position)
+  // ---------------------------------------------------------------
+  var candidatesCache = [];
+
+  function loadCandidates(forVoting) {
+    sb.from("candidates").select("*").eq("approved", true).order("created_at").then(function (res) {
+      if (res.error) {
+        console.error("loading candidates failed:", res.error);
+        return;
+      }
+      candidatesCache = res.data || [];
+      renderDirectory();
+      if (forVoting) loadVoteForm();
+    }).catch(function (err) {
+      console.error("loading candidates failed:", err);
+    });
+  }
+
+  function renderDirectory() {
+    var body = document.getElementById("candidates-body");
+    if (candidatesCache.length === 0) return; // keep the empty-note
+    document.getElementById("candidates-empty").hidden = true;
+
+    POSITIONS.forEach(function (p) {
+      var group = candidatesCache.filter(function (c) { return c.position === p.key; });
+      if (group.length === 0) return;
+
+      var wrap = document.createElement("div");
+      wrap.className = "posgroup";
+      var h3 = document.createElement("h3");
+      h3.textContent = p.key;
+      wrap.appendChild(h3);
+
+      var dir = document.createElement("div");
+      dir.className = "directory";
+      group.forEach(function (c) {
+        var card = document.createElement("div");
+        card.className = "candcard";
+        var photoHtml = c.photo_path
+          ? '<div class="photo"><img src="' + photoUrl(c.photo_path) + '" alt=""></div>'
+          : '<div class="photo"></div>';
+        card.innerHTML = photoHtml +
+          '<div class="ctext"><span class="cname"></span><span class="cmeta"></span></div>';
+        card.querySelector(".cname").textContent = c.name;
+        card.querySelector(".cmeta").textContent = c.year_programme || "";
+        dir.appendChild(card);
+      });
+      wrap.appendChild(dir);
+      body.appendChild(wrap);
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // Voting form: one group per position with candidates, shared
+  // email field
+  // ---------------------------------------------------------------
+  function loadVoteForm() {
+    var body = document.getElementById("vote-body");
+    var positionsWithCandidates = POSITIONS.filter(function (p) {
+      return candidatesCache.some(function (c) { return c.position === p.key; });
+    });
+
+    if (positionsWithCandidates.length === 0) {
+      return; // keep the empty-note
+    }
+    document.getElementById("vote-empty").hidden = true;
+
+    var pickerField = document.createElement("div");
+    pickerField.className = "formcard";
+    pickerField.style.marginBottom = "14px";
+    pickerField.innerHTML =
+      '<div class="field"><label for="v-group">Which group are you in?</label>' +
+      '<select id="v-group"><option value="" selected disabled>Select your year / programme&hellip;</option></select></div>' +
+      '<div class="field"><label for="v-email">Your UCL email <span class="hint">&mdash; used once per position to stop duplicate votes</span></label>' +
+      '<input type="email" id="v-email" required></div>';
+    body.appendChild(pickerField);
+
+    var groupSelect = pickerField.querySelector("#v-group");
+    positionsWithCandidates.forEach(function (p) {
+      var opt = document.createElement("option");
+      opt.value = p.key;
+      opt.textContent = p.key;
+      groupSelect.appendChild(opt);
+    });
+
+    var groupWraps = {};
+    groupSelect.addEventListener("change", function () {
+      Object.keys(groupWraps).forEach(function (key) {
+        groupWraps[key].hidden = key !== groupSelect.value;
+      });
+    });
+
+    positionsWithCandidates.forEach(function (p) {
+      var group = candidatesCache.filter(function (c) { return c.position === p.key; });
+      var wrap = document.createElement("div");
+      wrap.hidden = true;
+      groupWraps[p.key] = wrap;
+      body.appendChild(wrap);
+
+      var card = document.createElement("div");
+      card.className = "formcard";
+      card.style.marginBottom = "14px";
+
+      var h3 = document.createElement("h3");
+      h3.style.fontSize = "16px";
+      h3.style.margin = "0 0 10px";
+      h3.textContent = p.key;
+      card.appendChild(h3);
+
+      var form = document.createElement("form");
+      group.forEach(function (c, i) {
+        var row = document.createElement("div");
+        row.className = "radiorow";
+        var photoHtml = c.photo_path
+          ? '<div class="rphoto"><img src="' + photoUrl(c.photo_path) + '" alt=""></div>'
+          : '<div class="rphoto"></div>';
+        row.innerHTML =
+          '<input type="radio" name="cand" value="' + c.id + '" id="cand-' + c.id + '" required>' +
+          '<label for="cand-' + c.id + '">' + photoHtml + '<span></span></label>';
+        row.querySelector("label span").textContent = c.name;
+        form.appendChild(row);
+      });
+
+      var submitBtn = document.createElement("button");
+      submitBtn.type = "submit";
+      submitBtn.className = "btn btn-primary";
+      submitBtn.style.marginTop = "12px";
+      submitBtn.textContent = "Submit vote";
+      form.appendChild(submitBtn);
+
+      var msg = document.createElement("div");
+      msg.className = "form-msg";
+      msg.hidden = true;
+      form.appendChild(msg);
+
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var emailInput = document.getElementById("v-email");
+        var email = emailInput.value.trim();
+        if (!UCL_EMAIL_RE.test(email)) {
+          showMsg(msg, "error", "Enter a valid @ucl.ac.uk or @live.ucl.ac.uk email above first.");
+          return;
+        }
+        var checked = form.querySelector('input[name="cand"]:checked');
+        if (!checked) {
+          showMsg(msg, "error", "Pick a candidate first.");
+          return;
+        }
+        submitBtn.disabled = true;
+        sb.from("votes").insert({
+          position: p.key,
+          candidate_id: checked.value,
+          voter_email: email
+        }).then(function (res) {
+          if (res.error) {
+            if (res.error.code === "23505") {
+              showMsg(msg, "error", "You've already voted for this position.");
+            } else {
+              console.error("vote insert error:", res.error);
+              showMsg(msg, "error", "Couldn't submit your vote — " + (res.error.message || "unknown error") + (res.error.code ? " (" + res.error.code + ")" : ""));
+              submitBtn.disabled = false;
+            }
+            return;
+          }
+          showMsg(msg, "success", "Vote recorded — thank you.");
+          submitBtn.textContent = "Voted";
+        }).catch(function (err) {
+          console.error("vote insert failed:", err);
+          showMsg(msg, "error", "Couldn't reach the database — check your internet connection, or that the Supabase URL/key in this file are correct.");
+          submitBtn.disabled = false;
+        });
+      });
+
+      card.appendChild(form);
+      wrap.appendChild(card);
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // Nomination form
+  // ---------------------------------------------------------------
+  document.getElementById("nominate-form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var msg = document.getElementById("n-msg");
+    var name = document.getElementById("n-name").value.trim();
+    var email = document.getElementById("n-email").value.trim();
+    var position = document.getElementById("n-position").value;
+    var yearProg = document.getElementById("n-yearprog").value.trim();
+    var photoFile = document.getElementById("n-photo").files[0];
+    var submitBtn = document.getElementById("n-submit");
+
+    if (!UCL_EMAIL_RE.test(email)) {
+      showMsg(msg, "error", "Enter a valid @ucl.ac.uk or @live.ucl.ac.uk email.");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting…";
+
+    function insertCandidate(photoPath) {
+      sb.from("candidates").insert({
+        name: name,
+        email: email,
+        position: position,
+        year_programme: yearProg || null,
+        photo_path: photoPath
+      }).then(function (res) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit nomination";
+        if (res.error) {
+          if (res.error.code === "23505") {
+            showMsg(msg, "error", "That email has already been used to nominate a candidate.");
+          } else {
+            console.error("candidate insert error:", res.error);
+            showMsg(msg, "error", "Couldn't submit your nomination — " + (res.error.message || "unknown error") + (res.error.code ? " (" + res.error.code + ")" : ""));
+          }
+          return;
+        }
+        showMsg(msg, "success", "Nomination received — thanks! It'll appear once it's been reviewed.");
+        document.getElementById("nominate-form").reset();
+      }).catch(function (err) {
+        console.error("candidate insert failed:", err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit nomination";
+        showMsg(msg, "error", "Couldn't reach the database — check your internet connection, or that the Supabase URL/key in this file are correct.");
+      });
+    }
+
+    if (photoFile) {
+      var ext = (photoFile.name.split(".").pop() || "jpg").toLowerCase();
+      var path = email.replace(/[^a-zA-Z0-9]/g, "_") + "-" + Date.now() + "." + ext;
+      sb.storage.from("candidate-photos").upload(path, photoFile).then(function (res) {
+        if (res.error) {
+          console.error("photo upload error:", res.error);
+          insertCandidate(null);
+          return;
+        }
+        insertCandidate(path);
+      }).catch(function (err) {
+        console.error("photo upload failed:", err);
+        insertCandidate(null);
+      });
+    } else {
+      insertCandidate(null);
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
