@@ -278,8 +278,10 @@
   .radiorow .rphoto {
     width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
     border: 1px solid var(--line-strong); background: var(--accent-soft); flex: 0 0 32px;
+    display: flex; align-items: center; justify-content: center;
   }
   .radiorow .rphoto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .radiorow .rphoto .initials { font-size: 12px; }
 
   /* ---------- Positions ---------- */
 
@@ -323,9 +325,20 @@
     overflow: hidden;
     border: 1px solid var(--line-strong);
     background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .candcard .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .initials {
+    font-family: "Fraunces", ui-serif, Georgia, serif;
+    font-weight: 600;
+    color: var(--accent);
+    user-select: none;
+  }
+  .candcard .photo .initials { font-size: 17px; }
 
   .candcard .ctext { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
   .candcard .cname { font-weight: 600; font-size: 14.5px; }
@@ -578,6 +591,13 @@
     return sb.storage.from("candidate-photos").getPublicUrl(path).data.publicUrl;
   }
 
+  function initials(name) {
+    var parts = (name || "").trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return "?";
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
   function showMsg(el, kind, text) {
     el.hidden = false;
     el.className = "form-msg " + kind;
@@ -699,11 +719,13 @@
         card.className = "candcard";
         var photoHtml = c.photo_path
           ? '<div class="photo"><img src="' + photoUrl(c.photo_path) + '" alt=""></div>'
-          : '<div class="photo"></div>';
+          : '<div class="photo"><span class="initials"></span></div>';
         card.innerHTML = photoHtml +
           '<div class="ctext"><span class="cname"></span><span class="cmeta"></span></div>';
         card.querySelector(".cname").textContent = c.name;
         card.querySelector(".cmeta").textContent = c.year_programme || "";
+        var cardInitials = card.querySelector(".initials");
+        if (cardInitials) cardInitials.textContent = initials(c.name);
         dir.appendChild(card);
       });
       wrap.appendChild(dir);
@@ -785,11 +807,13 @@
           ? '<div class="rphoto"></div>'
           : (c.photo_path
               ? '<div class="rphoto"><img src="' + photoUrl(c.photo_path) + '" alt=""></div>'
-              : '<div class="rphoto"></div>');
+              : '<div class="rphoto"><span class="initials"></span></div>');
         row.innerHTML =
           '<input type="radio" name="cand" value="' + c.id + '" id="cand-' + c.id + '" required>' +
-          '<label for="cand-' + c.id + '">' + photoHtml + '<span></span></label>';
-        row.querySelector("label span").textContent = c.name;
+          '<label for="cand-' + c.id + '">' + photoHtml + '<span class="cand-name"></span></label>';
+        row.querySelector(".cand-name").textContent = c.name;
+        var rowInitials = row.querySelector(".rphoto .initials");
+        if (rowInitials) rowInitials.textContent = initials(c.name);
         if (isRon) {
           var hint = document.createElement("div");
           hint.style.fontSize = "12.5px";
