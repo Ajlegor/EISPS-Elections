@@ -461,12 +461,8 @@
           <input type="email" id="n-email" required>
         </div>
         <div class="field">
-          <label for="n-position">Position you're standing for</label>
+          <label for="n-position">Position you're standing for <span class="hint">&mdash; must match your own year and programme</span></label>
           <select id="n-position" required></select>
-        </div>
-        <div class="field">
-          <label for="n-yearprog">Year / programme <span class="hint">(optional)</span></label>
-          <input type="text" id="n-yearprog" placeholder="e.g. BA ISPS, Year 2">
         </div>
         <div class="field">
           <label for="n-photo">Photo <span class="hint">(optional, shown on your candidate card)</span></label>
@@ -849,7 +845,6 @@
     var name = document.getElementById("n-name").value.trim();
     var email = document.getElementById("n-email").value.trim();
     var position = document.getElementById("n-position").value;
-    var yearProg = document.getElementById("n-yearprog").value.trim();
     var photoFile = document.getElementById("n-photo").files[0];
     var submitBtn = document.getElementById("n-submit");
 
@@ -866,7 +861,6 @@
         name: name,
         email: email,
         position: position,
-        year_programme: yearProg || null,
         photo_path: photoPath
       }).then(function (res) {
         submitBtn.disabled = false;
