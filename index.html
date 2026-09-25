@@ -528,6 +528,7 @@
   ];
 
   var UCL_EMAIL_RE = /^[A-Za-z0-9._%+-]+@(ucl\.ac\.uk|live\.ucl\.ac\.uk)$/i;
+  var RON_NAME = "Reopen Nominations (RON)";
 
   var configured = SUPABASE_URL.indexOf("PASTE_") !== 0 && SUPABASE_ANON_KEY.indexOf("PASTE_") !== 0;
   var sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
@@ -682,7 +683,7 @@
     document.getElementById("candidates-empty").hidden = true;
 
     POSITIONS.forEach(function (p) {
-      var group = candidatesCache.filter(function (c) { return c.position === p.key; });
+      var group = candidatesCache.filter(function (c) { return c.position === p.key && c.name !== RON_NAME; });
       if (group.length === 0) return;
 
       var wrap = document.createElement("div");
@@ -752,6 +753,9 @@
 
     positionsWithCandidates.forEach(function (p) {
       var group = candidatesCache.filter(function (c) { return c.position === p.key; });
+      group.sort(function (a, b) {
+        return (a.name === RON_NAME ? 1 : 0) - (b.name === RON_NAME ? 1 : 0);
+      });
       var wrap = document.createElement("div");
       wrap.hidden = true;
       groupWraps[p.key] = wrap;
@@ -769,15 +773,31 @@
 
       var form = document.createElement("form");
       group.forEach(function (c, i) {
+        var isRon = c.name === RON_NAME;
         var row = document.createElement("div");
         row.className = "radiorow";
-        var photoHtml = c.photo_path
-          ? '<div class="rphoto"><img src="' + photoUrl(c.photo_path) + '" alt=""></div>'
-          : '<div class="rphoto"></div>';
+        if (isRon) {
+          row.style.borderTop = "1px dashed #d8d0c0";
+          row.style.marginTop = "10px";
+          row.style.paddingTop = "12px";
+        }
+        var photoHtml = isRon
+          ? '<div class="rphoto"></div>'
+          : (c.photo_path
+              ? '<div class="rphoto"><img src="' + photoUrl(c.photo_path) + '" alt=""></div>'
+              : '<div class="rphoto"></div>');
         row.innerHTML =
           '<input type="radio" name="cand" value="' + c.id + '" id="cand-' + c.id + '" required>' +
           '<label for="cand-' + c.id + '">' + photoHtml + '<span></span></label>';
         row.querySelector("label span").textContent = c.name;
+        if (isRon) {
+          var hint = document.createElement("div");
+          hint.style.fontSize = "12.5px";
+          hint.style.color = "#7a7264";
+          hint.style.margin = "2px 0 0 46px";
+          hint.textContent = "Vote to reopen nominations instead of electing anyone to this position.";
+          row.appendChild(hint);
+        }
         form.appendChild(row);
       });
 
