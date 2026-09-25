@@ -425,12 +425,12 @@
       <div class="step" data-step="nominations">
         <div class="num">1</div>
         <h3>Nominate</h3>
-        <p>Any EISPS student can put themselves forward for their year group's position.</p>
+                <p id="step-nominate-p">Any EISPS student can put themselves forward for their year group's position.</p>
       </div>
       <div class="step" data-step="voting">
         <div class="num">2</div>
         <h3>Campaign &amp; vote</h3>
-        <p>Once nominations close, candidates are listed below and voting opens &mdash; one vote per student, per position.</p>
+                <p id="step-vote-p">Once nominations close, candidates are listed below and voting opens &mdash; one vote per student, per position.</p>
       </div>
       <div class="step" data-step="results">
         <div class="num">3</div>
@@ -604,8 +604,13 @@
     if (phase === "nominations") {
       setStage("nominations", "Nominations open" + (s.nominations_close_at ? " — closes " + fmtDate(s.nominations_close_at) : ""));
       document.getElementById("nominate-form-wrap").hidden = false;
+      document.getElementById("nominate-note").textContent = s.nominations_close_at
+        ? "Open to all EISPS students, until " + fmtDate(s.nominations_close_at) + " — you'll need your UCL email address."
+        : "Open to all EISPS students — you'll need your UCL email address.";
     } else {
-      document.getElementById("nominate-note").textContent = "Nominations are closed.";
+      document.getElementById("nominate-note").textContent = s.nominations_close_at
+        ? "Nominations closed " + fmtDate(s.nominations_close_at) + "."
+        : "Nominations are closed.";
       document.getElementById("nominate-form-wrap").hidden = true;
     }
 
@@ -626,6 +631,24 @@
       note.className = "results-note";
       note.textContent = s.results_note || "Results are being finalised — check back shortly.";
       document.getElementById("results-body").appendChild(note);
+    }
+
+    applyStepDates(s);
+  }
+
+  function applyStepDates(s) {
+    var stepNominate = document.getElementById("step-nominate-p");
+    if (s.nominations_close_at) {
+      stepNominate.textContent = "Any EISPS student can put themselves forward for their year group's position. Nominations close " + fmtDate(s.nominations_close_at) + ".";
+    }
+
+    var stepVote = document.getElementById("step-vote-p");
+    if (s.voting_opens_at && s.voting_closes_at) {
+      stepVote.textContent = "Candidates are listed below once nominations close. Voting runs from " + fmtDate(s.voting_opens_at) + " to " + fmtDate(s.voting_closes_at) + " — one vote per student, per position.";
+    } else if (s.voting_opens_at) {
+      stepVote.textContent = "Candidates are listed below once nominations close. Voting opens " + fmtDate(s.voting_opens_at) + " — one vote per student, per position.";
+    } else if (s.voting_closes_at) {
+      stepVote.textContent = "Candidates are listed below once nominations close. Voting closes " + fmtDate(s.voting_closes_at) + " — one vote per student, per position.";
     }
   }
 
