@@ -662,11 +662,11 @@
 
     var stepVote = document.getElementById("step-vote-p");
     if (s.voting_opens_at && s.voting_closes_at) {
-      stepVote.textContent = "Candidates are listed below once nominations close. Voting runs from " + fmtDate(s.voting_opens_at) + " to " + fmtDate(s.voting_closes_at) + " — one vote per student, per position.";
+      stepVote.textContent = "Candidates are listed below once nominations close. Voting runs from " + fmtDate(s.voting_opens_at) + " to " + fmtDate(s.voting_closes_at) + " — one vote per student.";
     } else if (s.voting_opens_at) {
-      stepVote.textContent = "Candidates are listed below once nominations close. Voting opens " + fmtDate(s.voting_opens_at) + " — one vote per student, per position.";
+      stepVote.textContent = "Candidates are listed below once nominations close. Voting opens " + fmtDate(s.voting_opens_at) + " — one vote per student.";
     } else if (s.voting_closes_at) {
-      stepVote.textContent = "Candidates are listed below once nominations close. Voting closes " + fmtDate(s.voting_closes_at) + " — one vote per student, per position.";
+      stepVote.textContent = "Candidates are listed below once nominations close. Voting closes " + fmtDate(s.voting_closes_at) + " — one vote per student.";
     }
   }
 
